@@ -13,7 +13,6 @@ if (navToggle && navLinks) {
   navToggle.addEventListener('click', () => {
     const isOpen = navLinks.classList.toggle('mobile-open');
     navToggle.setAttribute('aria-expanded', isOpen);
-    nav.classList.toggle('menu-open', isOpen);
   });
 }
 
@@ -79,102 +78,41 @@ if (doctorTabs.length) {
 }
 
 // ── Clinics carousel ──
-// Paged by whole screens (not a 1-card slide): perView cards per page,
-// Prev/Next always move exactly one page. Page position is tracked as
-// a page NUMBER (pageIndex), not a card index, so the disabled state
-// is a single unambiguous comparison against pageCount - 1 — nothing
-// to get out of sync after a resize.
-const clinicsWrap = document.querySelector('.clinics-track-wrap');
 const clinicsTrack = document.getElementById('clinicsTrack');
 const clinicPrev = document.getElementById('clinicPrev');
 const clinicNext = document.getElementById('clinicNext');
-if (clinicsWrap && clinicsTrack && clinicPrev && clinicNext) {
-  const cards = Array.from(clinicsTrack.querySelectorAll('.clinic-card'));
-  let pageIndex = 0;
+if (clinicsTrack && clinicPrev && clinicNext) {
+  const cards = clinicsTrack.querySelectorAll('.clinic-card');
+  let clinicIndex = 0;
 
   function visibleCount() {
     const w = window.innerWidth;
     if (w <= 620) return 1;
     if (w <= 1100) return 2;
-    return 4;
-  }
-  // Swipe is only for small/medium (mobile/tablet) screens; large
-  // screens use the Prev/Next buttons only.
-  function swipeEnabled() {
-    return window.innerWidth <= 1100;
-  }
-  function pageCount() {
-    return Math.max(1, Math.ceil(cards.length / visibleCount()));
+return 8;
   }
 
-  function goToPage(index, animate) {
-    const maxPage = pageCount() - 1;
-    pageIndex = Math.min(Math.max(0, index), maxPage);
-    const pageWidth = clinicsWrap.clientWidth;
-    if (animate === false) {
-      clinicsTrack.style.transition = 'none';
-      clinicsTrack.style.transform = `translateX(-${pageIndex * pageWidth}px)`;
-      clinicsTrack.offsetHeight; // flush the instant jump before re-enabling the transition
-      clinicsTrack.style.transition = '';
-    } else {
-      clinicsTrack.style.transform = `translateX(-${pageIndex * pageWidth}px)`;
-    }
-    clinicPrev.disabled = pageIndex === 0;
-    clinicNext.disabled = pageIndex === maxPage;
-    const firstVisible = pageIndex * visibleCount();
-    cards.forEach((card, i) => card.classList.toggle('active', i === firstVisible));
+  function updateClinics() {
+    const perView = visibleCount();
+    const maxIndex = Math.max(0, cards.length - perView);
+    clinicIndex = Math.min(clinicIndex, maxIndex);
+    const cardWidth = clinicsTrack.parentElement.clientWidth / perView;
+    clinicsTrack.style.transform = `translateX(-${clinicIndex * cardWidth}px)`;
+    clinicPrev.disabled = clinicIndex === 0;
+    clinicNext.disabled = clinicIndex >= maxIndex;
+
+    cards.forEach((card, i) => card.classList.toggle('active', i === clinicIndex));
   }
 
-  clinicPrev.addEventListener('click', () => goToPage(pageIndex - 1));
-  clinicNext.addEventListener('click', () => goToPage(pageIndex + 1));
-  window.addEventListener('resize', () => goToPage(pageIndex, false));
-  goToPage(0, false);
-
-  // ── Swipe / drag (small & medium screens only) ──
-  let dragging = false;
-  let dragStartX = 0;
-  let dragStartY = 0;
-  let dragDeltaX = 0;
-  let dragAxis = null; // 'x' | 'y' | null (undecided)
-
-  clinicsWrap.addEventListener('pointerdown', (e) => {
-    if (!swipeEnabled()) return;
-    dragging = true;
-    dragAxis = null;
-    dragDeltaX = 0;
-    dragStartX = e.clientX;
-    dragStartY = e.clientY;
-    clinicsTrack.style.transition = 'none';
+  clinicPrev.addEventListener('click', () => { clinicIndex = Math.max(0, clinicIndex - 1); updateClinics(); });
+  clinicNext.addEventListener('click', () => {
+    const perView = visibleCount();
+    const maxIndex = Math.max(0, cards.length - perView);
+    clinicIndex = Math.min(maxIndex, clinicIndex + 1);
+    updateClinics();
   });
-
-  clinicsWrap.addEventListener('pointermove', (e) => {
-    if (!dragging) return;
-    const dx = e.clientX - dragStartX;
-    const dy = e.clientY - dragStartY;
-    if (dragAxis === null && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
-      dragAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-    }
-    if (dragAxis !== 'x') return;
-    e.preventDefault();
-    dragDeltaX = dx;
-    const pageWidth = clinicsWrap.clientWidth;
-    clinicsTrack.style.transform = `translateX(${-(pageIndex * pageWidth) + dx}px)`;
-  }, { passive: false });
-
-  function endDrag() {
-    if (!dragging) return;
-    dragging = false;
-    clinicsTrack.style.transition = '';
-    const pageWidth = clinicsWrap.clientWidth;
-    if (dragAxis === 'x' && Math.abs(dragDeltaX) > pageWidth * 0.18) {
-      goToPage(pageIndex + (dragDeltaX < 0 ? 1 : -1));
-    } else {
-      goToPage(pageIndex);
-    }
-  }
-  clinicsWrap.addEventListener('pointerup', endDrag);
-  clinicsWrap.addEventListener('pointercancel', endDrag);
-  clinicsWrap.addEventListener('pointerleave', () => { if (dragging) endDrag(); });
+  window.addEventListener('resize', updateClinics);
+  updateClinics();
 }
 
 // ── Testimonials carousel ──
