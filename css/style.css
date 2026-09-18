@@ -1066,11 +1066,6 @@ footer.site-footer { background: var(--green-800); padding: 5rem 0 2.5rem; }
   color: var(--green-700);
   background: rgba(255,255,255,0.7);
 }
-  display: block;
-  width: 100%;
-  height: auto;
-  margin: 0;
-}
 /* ── QUICK INFO STRIP ─────────────────────────────────────── */
 
 .quick-info {
