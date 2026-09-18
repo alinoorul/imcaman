@@ -1016,13 +1016,56 @@ footer.site-footer { background: var(--green-800); padding: 5rem 0 2.5rem; }
    /* ── LANDING HERO ─────────────────────────────────────────── */
 
 .hero.hero-landing {
+  position: relative;
   padding: 0;
-  margin: 0;
+  margin-top: 13.5rem;
   background: var(--green-200);
   overflow: hidden;
 }
 
 .hero-landing-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+}
+
+.hero-landing-content {
+  position: absolute;
+  top: 50%;
+  right: 7%;
+  transform: translateY(-50%);
+  width: 38%;
+  text-align: center;
+  z-index: 2;
+}
+
+.hero-landing-content h1 {
+  font-family: var(--display);
+  font-size: 4rem;
+  line-height: 0.95;
+  font-weight: 500;
+  color: var(--green-800);
+  margin-bottom: 1.2rem;
+}
+
+.hero-landing-content p {
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: var(--ink);
+  margin-bottom: 2rem;
+}
+
+.hero-landing-btn {
+  display: inline-block;
+  font-family: var(--sans);
+  font-weight: 600;
+  padding: 0.9rem 1.8rem;
+  border: 2px solid var(--green-700);
+  border-radius: 8px;
+  color: var(--green-700);
+  background: rgba(255,255,255,0.7);
+}
   display: block;
   width: 100%;
   height: auto;
