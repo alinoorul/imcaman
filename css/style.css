@@ -1032,8 +1032,8 @@ footer.site-footer { background: var(--green-800); padding: 5rem 0 2.5rem; }
 
 .hero-landing-content {
   position: absolute;
-top: 45%;
-right: 4%;
+top: 40%;
+right: 2%;
   transform: translateY(-50%);
   width: 38%;
   text-align: center;
