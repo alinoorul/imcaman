@@ -1059,12 +1059,15 @@ right: 2%;
 .hero-landing-btn {
   display: inline-block;
   font-family: var(--sans);
+  font-size: 0.9rem;
   font-weight: 600;
-  padding: 0.9rem 1.8rem;
-  border: 2px solid var(--green-700);
-  border-radius: 8px;
-  color: var(--green-700);
-  background: rgba(255,255,255,0.7);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 1rem 2.2rem;
+  border: none;
+  border-radius: 6px;
+  color: var(--white);
+  background: var(--green-700);
 }
 /* ── QUICK INFO STRIP ─────────────────────────────────────── */
 
